@@ -120,7 +120,9 @@ def predire(surface_canvas):
 
     # --- Étape 4 : Créer le tenseur et prédire ---
     tenseur = torch.from_numpy(gris).float()   # (28, 28)
-    tenseur = tenseur.view(1, 784).to(device)  # aplatir → (1, 784), envoyer sur GPU
+    # reshape plutôt que view : après smoothscale + transpose, le tenseur peut être
+    # non-contigu en mémoire ; reshape alloue une copie contiguë si nécessaire.
+    tenseur = tenseur.reshape(1, 784).to(device)
 
     # torch.no_grad() : désactive le moteur de gradient de PyTorch.
     # Pendant la prédiction, on n'a pas besoin de calculer les gradients
